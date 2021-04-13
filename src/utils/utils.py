@@ -1,6 +1,18 @@
-from math import floor, log10
-
+import os
 import src.utils.colors as c
+
+
+def checkPathAndType(path, file_types):
+    if not os.path.exists(path):
+        c.red("Path doesn't exist")
+        exit()
+
+    file_type = path.split(".")[-1]
+    if file_type not in file_types:
+        c.red("This type of file isn't admitted (only {})".format(file_types))
+        exit()
+
+    return file_type
 
 
 def printEvent(ev):

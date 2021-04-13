@@ -32,12 +32,12 @@ def testGenerateRandomEvents():
     return list_events
 
 
-def testSaveEventsByType(event_list, output_type):
-    convertWithList(event_list, output_type, TEST_FILE + output_type)
+def testSaveEventsByType(event_list, output_type, output_file=None):
+    convertWithList(event_list, output_type, output_file if output_file else TEST_FILE + output_type)
 
 
-def testLoadEventsByFile(input_type):
-    return convertToList(input_type, TEST_FILE + input_type)
+def testLoadEventsByFile(input_type, input_file=None):
+    return convertToList(input_type, input_file if input_file else TEST_FILE + input_type)
 
 
 def equalEventList(event_list1, event_list2):

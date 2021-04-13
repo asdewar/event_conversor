@@ -1,60 +1,26 @@
-import rosbag
-
 from src.conversors.mainConverter import convert
-from src.conversors.rosbagConversor import abstractToRosbag, rosbagToAbstract
+from src.utils.utils import choose, checkPathAndType
+import src.utils.colors as c
 
-# x -> int
-# y -> int
-# pol -> bool
-# ts -> float
-
-in_file = "data/rosbag/shapes_rotation.bag"
-
-out_file = "output/output.bag"
-
-ll = [
-        {
-            "x": 1,
-            "y": 2,
-            "pol": True,
-            "ts": 1233.99879
-        },
-        {
-            "x": 3,
-            "y": 4,
-            "pol": False,
-            "ts": 987311.112133
-        },
-        {
-            "x": 5,
-            "y": 5,
-            "pol": True,
-            "ts": 76443.41231
-        }
-    ]
+FILE_TYPES = ['txt', 'bag']
 
 
 def main():
 
-    print("inicio")
+    input_file = input("Introduce the input file name: ")
 
-    # # Parseo de argumentos.
-    # parser = argparse.ArgumentParser(description='A program that converts rosbag to abstract')
+    input_type = checkPathAndType(input_file, FILE_TYPES)
 
-    # # Path del archivo a convertir.
-    # parser.add_argument('--path', '-p', help='path of the file to convert')
+    output_type = choose("Choose the output type: ", FILE_TYPES)
 
-    # # Parseamos los argumentos con el parser.
-    # args = parser.parse_args()
+    output_file = input("Introduce the path of the resultant file: ")
 
-    # # TODO: path para debug
-    # path = './datasets/rosbag/rosbag_example/boxes.bag'
+    c.yellow("Starting conversion...")
 
-    # convert("data/txt/small.txt", "txt", "data/rosbag/small2.bag", "bag")
+    convert(input_type, input_file, output_type, output_file)
 
-    convert("data/rosbag/small2.bag", "bag", "output/output.txt", "txt")
+    c.green("Conversion finished!!!")
 
 
-# Main de python
 if __name__ == '__main__':
     main()

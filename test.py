@@ -2,6 +2,14 @@ from testing.src.testUtils import testGenerateRandomEvents, testSaveEventsByType
 
 
 def main():
+
+    event_list_txt = testLoadEventsByFile("txt", "jjj.txt")
+    event_list_bag = testLoadEventsByFile("bag", "testing/output/test_output.bag")
+
+    equalEventList(event_list_bag, event_list_txt)
+
+
+def testAllConversors():
     event_list = testGenerateRandomEvents()
 
     print("Checking bag write and reading")
