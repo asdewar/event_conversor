@@ -1,0 +1,6 @@
+{
+    x   : Integer,
+    y   : Integer,
+    ts  : Float,
+    pol : Boolean
+}
