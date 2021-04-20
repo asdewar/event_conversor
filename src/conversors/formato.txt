@@ -1,6 +1,41 @@
-{
+abstract : {
     x   : Integer,
     y   : Integer,
     ts  : Float,
     pol : Boolean
+}
+
+bag : {
+    x   : uint16,
+    y   : uint16,
+    ts  : time,
+    pol : bool
+}
+
+
+txt : {
+    x   : Str,
+    y   : Str,
+    ts  : Str,
+    pol : Str
+}
+
+mat : {
+    x   : Double,
+    y   : Double,
+    ts  : Double,
+    pol : Double
+}
+
+hdf5 : {
+    x   : Integer,
+    y   : Integer,
+    ts  : Float,
+    pol : Boolean
+}
+
+TODO: (EventArray for bag files) : {
+    height : uint32
+    width  : uint32
+    events : Event[]
 }

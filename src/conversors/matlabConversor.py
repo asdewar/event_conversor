@@ -1,85 +1,107 @@
-# External imports.
-import sys
-import argparse
+import numpy as np
 import scipy.io as sio
+from numpy import double
 
-# My imports.
 from src.formatFiles.EventClass import Event
-from src.utils.colors import *
-from src.utils.utils import choose
+from src.utils import colors
+from src.utils.utils import choose, combine, multiInputs, getDecimal
 
-STRUCT_NAMES = ['x', 'y', 'ts', 'pol']
+STRUCT_NAMES = ['coordinate x', 'coordinate y', 'polarization', 'timestamp']
+TYPES_ADMITTED = ['1 struct', 'Matrix nx4', '4 structs']
 
 
 # matlab to abstract
 def matlabToAbstract(input_file):
-    # Cargamos el formato del archivo.
-    format = sio.whosmat(input_file)
 
-    # Cargamos el archivo.
-    data = sio.loadmat(input_file)
+    structs_types = list(sio.whosmat(input_file))
+    file_data = sio.loadmat(input_file)
+    is_matrix = False
+    arrays = []
 
-    # Si hay solo una estructura y es de tamalo 1x1, es una estructura con 4 arrays.
-    if len(format) == 1 and format[0][1] == (1, 1):
+    # Only one struct
+    if len(structs_types) == 1:
+        struct_name, struct_size, _ = structs_types[0]
 
-        # Obtenemos la estructura.
-        struct = data[format[0][0]]
+        # 1 struct
+        if struct_size == (1, 1):
+            struct = file_data[struct_name]
 
-        # Obtenemos los nombres de los 4 arrays.
-        options = list(struct.dtype.fields)
+            names = list(map(
+                lambda name: choose("Where is {}?: ".format(name), list(struct.dtype.fields))
+                , STRUCT_NAMES))
 
-        # Obtenemos el orden de los arrays.
-        names = list(map(
-            lambda name: choose("¿Donde se encuentra {}?: ".format(name), options)
-            , STRUCT_NAMES))
+            arrays = list(map(
+                lambda name: struct[0][name][0]
+                , names))
 
-        # Obtenemos los arrays
-        arrays = list(map(
-            lambda name: struct[0][name][0]
-            , names))
+        # Matrix nx4
+        elif struct_size[1] == 4:
+            is_matrix = True
+            matrix = file_data[struct_name]
 
-    # Si es solo una estructura, pero no de tamaño 1x1, hay 
-    elif len(format) == 1 and format[0][1] != (1, 1):
-        print("·PROCESO")
+            ln = matrix[-1]
+            print("The last line of the matrix is [{}, {}, {}, {}]".format(ln[0], ln[1], ln[2], ln[3]))
 
-    # Si hay cuatro estructuras, eso significa que hay 4 estructuras con x, y, pol y ts .
-    elif len(format) == 4:
+            indexes = list(map(
+                lambda name: choose("Where is {}?: ".format(name), ln, True)
+                , STRUCT_NAMES))
 
-        # Se obtienen los nombres de todos los arrays del archivo.
+            arrays = list(map(
+                lambda index: matrix[:, index]
+                , indexes))
+
+    # 4 structs (one for each event's parameter)
+    elif len(structs_types) == 4:
         options = list(map(
             lambda st: st[0]
-            , format))
+            , structs_types))
 
-        # Le preguntamos al usuario que estructuras de las que hay quiere.
         names = list(map(
-            lambda name: choose("¿Donde se encuentra {}?: ".format(name), options)
+            lambda name: choose("Where is {}?: ".format(name), options)
             , STRUCT_NAMES))
 
-        # Cargamos cada array según su nombre.
         arrays = list(map(
-            lambda name: data[name]
+            lambda name: file_data[name]
             , names))
 
-    # Creamos el diccionario con los arrays recogidos de una de las tres maneras.
-    eventos = list(map(lambda x, y, ts, pol: Event(
-        x[0],
-        y[0],
-        pol[0],
-        ts[0]
-    )
-        #                {
-        #     'x': x[0],
-        #     'y': y[0],
-        #     'ts': ts[0],
-        #     'pol': pol[0]
-        # }
-        , arrays[0], arrays[1], arrays[2], arrays[3]))
+    if is_matrix:
+        events = list(map(lambda x, y, pol, ts: Event(x, y, pol, combine(0, ts)), arrays[0], arrays[1], arrays[2], arrays[3]))
+    else:
+        events = list(map(lambda x, y, pol, ts: Event(x[0], y[0], pol[0], combine(0, ts[0])), arrays[0], arrays[1], arrays[2], arrays[3]))
 
-    # Devolvemos los eventos calculados
-    return eventos
+    return events
 
 
 # matlab to abstract
 def abstractToMatlab(event_list, output_file):
-    print("TODO")
-    return
+    struct_type = choose("Which struct type do you prefer? ", TYPES_ADMITTED)
+    file_data = {}
+
+    arrays = [[], [], [], []]
+    for ev in event_list:
+        arrays[0].append(double(ev.x))
+        arrays[1].append(double(ev.y))
+        arrays[2].append(double(ev.pol))
+        arrays[3].append(double(getDecimal(ev.ts)))
+
+    # 1 struct
+    if struct_type == TYPES_ADMITTED[0]:
+        struct_name = input("What is the name of the struct?: ")
+        data_names = multiInputs("How are the names of these parameters", STRUCT_NAMES)
+
+        file_data[struct_name] = {}
+        for arr, name in zip(arrays, data_names):
+            file_data[struct_name][name] = arr
+
+    # Matrix nx4
+    elif struct_type == TYPES_ADMITTED[1]:
+        struct_name = input("What is the name of the struct?: ")
+        file_data[struct_name] = np.column_stack((arrays[0], arrays[1], arrays[2], arrays[3]))
+
+    # 4 structs (one for each event's parameter)
+    elif struct_type == TYPES_ADMITTED[2]:
+        struct_names = multiInputs("How are the names of these structs", STRUCT_NAMES)
+        for arr, name in zip(arrays, struct_names):
+            file_data[name] = arr
+
+    sio.savemat(output_file, file_data, oned_as="column")
