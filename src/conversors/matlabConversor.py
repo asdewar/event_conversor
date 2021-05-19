@@ -1,13 +1,10 @@
 import numpy as np
 import scipy.io as sio
 from numpy import double
-
-from src.formatFiles.EventClass import Event
-from src.utils import colors
-from src.utils.utils import choose, combine, multiInputs, getDecimal
-
-STRUCT_NAMES = ['coordinate x', 'coordinate y', 'polarization', 'timestamp']
-TYPES_ADMITTED = ['1 struct', 'Matrix nx4', '4 structs']
+import src.utils.constants as cte
+from src.config.config import Config
+from src.format.EventClass import Event
+from src.utils.utils import choose, combine, multiInputs, secsToNsecs
 
 
 # matlab to abstract
@@ -17,6 +14,7 @@ def matlabToAbstract(input_file):
     file_data = sio.loadmat(input_file)
     is_matrix = False
     arrays = []
+    c = Config()
 
     # Only one struct
     if len(structs_types) == 1:
@@ -26,9 +24,12 @@ def matlabToAbstract(input_file):
         if struct_size == (1, 1):
             struct = file_data[struct_name]
 
-            names = list(map(
-                lambda name: choose("Where is {}?: ".format(name), list(struct.dtype.fields))
-                , STRUCT_NAMES))
+            if c.matlab:
+                names = c.config_data["matlab"]["1 struct"]["names"]
+            else:
+                names = list(map(
+                    lambda name: choose("Where is {}?: ".format(name), list(struct.dtype.fields))
+                    , cte.MATLAB_STRUCT_NAMES))
 
             arrays = list(map(
                 lambda name: struct[0][name][0]
@@ -39,12 +40,14 @@ def matlabToAbstract(input_file):
             is_matrix = True
             matrix = file_data[struct_name]
 
-            ln = matrix[-1]
-            print("The last line of the matrix is [{}, {}, {}, {}]".format(ln[0], ln[1], ln[2], ln[3]))
-
-            indexes = list(map(
-                lambda name: choose("Where is {}?: ".format(name), ln, True)
-                , STRUCT_NAMES))
+            if c.matlab:
+                indexes = c.config_data["matlab"]["Matrix nx4"]["indexes"]
+            else:
+                ln = matrix[-1]
+                print("The last line of the matrix is [{}, {}, {}, {}]".format(ln[0], ln[1], ln[2], ln[3]))
+                indexes = list(map(
+                    lambda name: choose("Where is {}?: ".format(name), ln, True)
+                    , cte.MATLAB_STRUCT_NAMES))
 
             arrays = list(map(
                 lambda index: matrix[:, index]
@@ -56,9 +59,12 @@ def matlabToAbstract(input_file):
             lambda st: st[0]
             , structs_types))
 
-        names = list(map(
-            lambda name: choose("Where is {}?: ".format(name), options)
-            , STRUCT_NAMES))
+        if c.matlab:
+            names = c.config_data["matlab"]["4 structs"]["names"]
+        else:
+            names = list(map(
+                lambda name: choose("Where is {}?: ".format(name), options)
+                , cte.MATLAB_STRUCT_NAMES))
 
         arrays = list(map(
             lambda name: file_data[name]
@@ -74,33 +80,50 @@ def matlabToAbstract(input_file):
 
 # matlab to abstract
 def abstractToMatlab(event_list, output_file):
-    struct_type = choose("Which struct type do you prefer? ", TYPES_ADMITTED)
     file_data = {}
+    c = Config()
+
+    if c.matlab:
+        struct_type = c.config_data["matlab"]["default"]
+    else:
+        struct_type = choose("Which struct type do you prefer? ", cte.MATLAB_TYPES_ADMITTED)
 
     arrays = [[], [], [], []]
     for ev in event_list:
         arrays[0].append(double(ev.x))
         arrays[1].append(double(ev.y))
         arrays[2].append(double(ev.pol))
-        arrays[3].append(double(getDecimal(ev.ts)))
+        arrays[3].append(double(secsToNsecs(ev.ts)))
 
     # 1 struct
-    if struct_type == TYPES_ADMITTED[0]:
-        struct_name = input("What is the name of the struct?: ")
-        data_names = multiInputs("How are the names of these parameters", STRUCT_NAMES)
+    if struct_type == cte.MATLAB_TYPES_ADMITTED[0]:
+        if c.matlab:
+            struct_name = c.config_data["matlab"]["1 struct"]["struct_name"]
+            data_names = c.config_data["matlab"]["1 struct"]["names"]
+        else:
+            struct_name = input("What is the name of the struct?: ")
+            data_names = multiInputs("How are the names of these parameters", cte.MATLAB_STRUCT_NAMES)
 
         file_data[struct_name] = {}
         for arr, name in zip(arrays, data_names):
             file_data[struct_name][name] = arr
 
     # Matrix nx4
-    elif struct_type == TYPES_ADMITTED[1]:
-        struct_name = input("What is the name of the struct?: ")
+    elif struct_type == cte.MATLAB_TYPES_ADMITTED[1]:
+        if c.matlab:
+            struct_name = c.config_data["matlab"]["Matrix nx4"]["struct_name"]
+        else:
+            struct_name = input("What is the name of the struct?: ")
+
         file_data[struct_name] = np.column_stack((arrays[0], arrays[1], arrays[2], arrays[3]))
 
     # 4 structs (one for each event's parameter)
-    elif struct_type == TYPES_ADMITTED[2]:
-        struct_names = multiInputs("How are the names of these structs", STRUCT_NAMES)
+    elif struct_type == cte.MATLAB_TYPES_ADMITTED[2]:
+        if c.matlab:
+            struct_names = c.config_data["matlab"]["4 structs"]["names"]
+        else:
+            struct_names = multiInputs("How are the names of these structs", cte.MATLAB_STRUCT_NAMES)
+
         for arr, name in zip(arrays, struct_names):
             file_data[name] = arr
 

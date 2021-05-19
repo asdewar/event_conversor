@@ -1,8 +1,8 @@
 abstract : {
     x   : Integer,
     y   : Integer,
-    ts  : Float,
-    pol : Boolean
+    pol : Boolean,
+    ts  : Float // En segundos
 }
 
 bag : {

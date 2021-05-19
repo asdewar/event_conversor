@@ -1,8 +1,9 @@
 import rosbag
 import rospy
-from src.formatFiles.EventClass import Event
-from src.utils.colors import *
-from src.formatFiles.EventRosbag import Event as _Event
+
+from src.config.config import Config
+from src.format.EventClass import Event
+from src.format.EventRosbag import Event as _Event
 from src.utils.utils import combine, choose
 
 
@@ -10,8 +11,13 @@ def rosbagToAbstract(input_file):
 
     bag = rosbag.Bag(input_file)
 
-    topics = bag.get_type_and_topic_info().topics
-    topic = choose("Which is the topic that contains the events?: ", topics)
+    c = Config()
+
+    if c.rosbag:
+        topic = c.config_data["rosbag"]["topic"]
+    else:
+        topics = bag.get_type_and_topic_info().topics
+        topic = choose("Which is the topic that contains the events?: ", topics)
 
     event_list = []
 
@@ -39,7 +45,12 @@ def rosbagToAbstract(input_file):
 def abstractToRosbag(event_list, output_file):
     bag = rosbag.Bag(output_file, "w")
 
-    topic_name = input('Introduce the name of the topic where the events are going to be write: ')
+    c = Config()
+
+    if c.rosbag:
+        topic = c.config_data["rosbag"]["topic"]
+    else:
+        topic = input('Introduce the name of the topic where the events are going to be write: ')
 
     for event in event_list:
         e = _Event()
@@ -48,6 +59,6 @@ def abstractToRosbag(event_list, output_file):
         e.polarity = event.pol
         e.ts = rospy.Time.from_sec(event.ts)
 
-        bag.write(topic_name, e)
+        bag.write(topic, e)
 
     bag.close()

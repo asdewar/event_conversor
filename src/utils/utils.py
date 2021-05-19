@@ -16,18 +16,17 @@ def checkPathAndType(path, file_types):
 
 
 def printEvent(ev):
-    print("Event: x={}\ty={}\tpol={}\tts={}".format(ev['x'], ev['y'], ev['pol'], ev['ts']))
+    print("Event: x={}\ty={}\tpol={}\tts={}".format(ev.x, ev.y, ev.pol, ev.ts))
 
 
-def choose(question, options):
-
-    c.blue("---CHOOSE---")
+def choose(question, options, ret_index=False):
+    c.blue("Introduce the INDEX of the element:")
     for i, option in enumerate(options):
         print("[{}] {}".format(i, option))
 
     try:
         index = int(input(question))
-        return list(options)[index]
+        return index if ret_index else list(options)[index]
 
     except ValueError:
         c.red('The input must be an integer')
@@ -37,11 +36,34 @@ def choose(question, options):
         exit()
 
 
+def multiInputs(question, options):
+    c.blue("Write the NAME for each option:")
+    ret_list = []
+
+    print(question)
+    for option in options:
+        ret_list.append(input("{}: ".format(option)))
+
+    return ret_list
+
+
 def raiseException(error_text="Error"):
     raise Exception(error_text)
 
 
-def combine(a, b):
-    if b == 0:
-        return a
-    return a + (b / 1000000000)
+def combine(whole, decimal):
+    if decimal == 0:
+        return whole
+    return whole + (decimal / 1000000000)
+
+
+def nsecsToSecs(num):
+    return num / 1000000000
+
+
+def secsToNsecs(num):
+    return int(num * 1000000000)
+
+
+def getExtension(file_name):
+    return file_name.split(".")[-1]

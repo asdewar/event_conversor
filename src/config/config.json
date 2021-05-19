@@ -1,0 +1,30 @@
+{
+  "rosbag": {
+    "_comment": "Name of the topic using for reading/writing events for rosbag format",
+    "topic": "DVS"
+  },
+  "matlab": {
+    "_comment": "Default format to write in a mat file, admitted '1 struct', 'Matrix nx4' and '4 structs'",
+    "default": "4 structs",
+    "1 struct": {
+      "_comment1": "The struct's name",
+      "struct_name": "TD",
+      "_comment2": "Name of the arrays inside the struct. Must be put in this order: [name of coordinate x, name of coordinate y, name of polarization, name of timestamp]",
+      "names": ["x", "y", "p", "ts"]
+    },
+    "Matrix nx4": {
+      "_comment1": "The struct's name",
+      "struct_name": "TD",
+      "_comment2": "The order of the elements, 0 is coordinate x, 1 is coordinate y, 2 is polarization and 3 is timestamp",
+      "indexes": [0, 1, 2, 3]
+    },
+    "4 structs": {
+      "_comment": "Name of the structs which contains information about the event. Must be put in this order: [name of coordinate x, name of coordinate y, name of polarization, name of timestamp]",
+      "names": ["x", "y", "p", "ts"]
+    }
+  },
+  "aedat": {
+    "_comment": "Default version to write aedat files, admitted: 'aedat 2.0', 'aedat 3.1' and 'aedat 4.0'",
+    "version": "aedat 3.1"
+  }
+}
