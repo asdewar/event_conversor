@@ -1,25 +1,30 @@
-from src.conversors.mainConverter import convert
-from src.utils.utils import choose, checkPathAndType
-import src.utils.colors as c
+from src.argumentsParser.argumentsParser import parseArguments
+from src.converters.mainConverter import convert
+from src.config.config import Config
+from src.gui.UI import UI
 
 FILE_TYPES = ['txt', 'bag']
 
 
 def main():
+    # Args parse.
+    input_file, output_file, input_type, output_type, use_config, config_path, ui_type = parseArguments()
 
-    input_file = input("Introduce the input file name: ")
+    # Init config features.
+    if use_config:
+        Config(config_path)
 
-    input_type = checkPathAndType(input_file, FILE_TYPES)
+    # Create UI.
+    if ui_type == "graphic":
+        UI("graphic")
+    elif ui_type == "terminal":
+        UI("terminal")
 
-    output_type = choose("Choose the output type: ", FILE_TYPES)
-
-    output_file = input("Introduce the path of the resultant file: ")
-
-    c.yellow("Starting conversion...")
-
-    convert(input_type, input_file, output_type, output_file)
-
-    c.green("Conversion finished!!!")
+    # Init UI.
+    try:
+        UI().objectUI.initialWindow(convert, input_file, output_file, input_type, output_type, use_config, config_path)
+    except Exception as e:
+        UI().objectUI.errorWindow(e)
 
 
 if __name__ == '__main__':

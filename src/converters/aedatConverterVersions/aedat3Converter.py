@@ -1,18 +1,23 @@
-import struct
+from src.utils.utils import nsecsToSecs, secsToNsecs, getNumProgress
 from src.format.EventClass import Event
-from src.utils.utils import nsecsToSecs, secsToNsecs
 import src.utils.constants as cte
+from src.gui.UI import UI
+import struct
+
+TS_MAX = 2**32
 
 
 def aedat3ToAbstract(input_file):
+    UI().objectUI.showMessage("Starting to read aedat3 file", "w")
     f = open(input_file, "rb")
-
     event_list = []
 
     # Read comments.
     while True:
         if f.readline().strip() == "#!END-HEADER".encode():
             break
+
+    UI().objectUI.showMessage("Starting to read the data (no progress bar available)", "w")
 
     # Read events
     while True:
@@ -30,10 +35,12 @@ def aedat3ToAbstract(input_file):
 
             event_list.append(Event(x, y, p, nsecsToSecs(ts)))
 
+    UI().objectUI.showMessage("Finishing reading the aedat3 file", "c")
     return event_list
 
 
 def abstractToAedat3(event_list, output_file):
+    UI().objectUI.showMessage("Starting to write aedat3 file", "w")
     f = open(output_file, "wb")
 
     for comment in cte.INITIAL_COMMENTS_AEDAT3:
@@ -45,23 +52,28 @@ def abstractToAedat3(event_list, output_file):
     f.write(b)
 
     # Events
-    for e in event_list:
+    num_progress = getNumProgress(len(event_list))
+    for i, e in enumerate(event_list):
+        if i % num_progress == 0:
+            UI().objectUI.sumProgress()
+
         x = '{0:015b}'.format(e.x)
         y = '{0:015b}'.format(e.y)
 
         if len(x) != 15 or len(y) != 15:
-            raise Exception("In AEDAT 3.1 x and y must be smaller than 32768")
+            raise Exception("In aedat3 x and y must be smaller than 32768")
 
         p = '1' if e.pol else '0'
         address = x + y + p + "0"
 
         ts = secsToNsecs(e.ts)
 
-        f.write(struct.pack('<I', int(address, 2)))
-        # try:
-        f.write(struct.pack('<I', int(ts)))
-        # except Exception as err:
-        #     print("ERROR, TIMESTAMP BIGGER THAN 4 BYTES, CANNOT CONVERT TO AEDAT 3")
-        #     raise err
+        if ts >= TS_MAX:
+            raise Exception("Error, timestamp bigger than 4 bytes, cannot convert to aedat3")
 
+        f.write(struct.pack('<I', int(address, 2)))
+        f.write(struct.pack('<I', int(ts)))
+
+    UI().objectUI.sumProgress(True)
     f.close()
+    UI().objectUI.showMessage("Finishing writing the aedat3 file", "c")

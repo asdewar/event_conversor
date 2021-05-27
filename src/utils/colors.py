@@ -20,3 +20,7 @@ def yellow(text):
 
 def red(text):
     print(Colors.red + text + Colors.default)
+
+
+def white(text):
+    print(text)

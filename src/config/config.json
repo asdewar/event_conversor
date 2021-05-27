@@ -1,7 +1,7 @@
 {
   "rosbag": {
     "_comment": "Name of the topic using for reading/writing events for rosbag format",
-    "topic": "DVS"
+    "topic": "/dvs/events"
   },
   "matlab": {
     "_comment": "Default format to write in a mat file, admitted '1 struct', 'Matrix nx4' and '4 structs'",

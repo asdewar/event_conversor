@@ -1,9 +1,11 @@
 from datetime import datetime
 
 # ---------------------- MAIN
-ADMITTED_TYPES = ["txt", "bag", "mat", "aedat", "bin"]
+ADMITTED_TYPES = ["txt", "bag", "mat", "aedat", "aedat4", "bin"]
 
 CONFIG_PATH = "src/config/config.json"
+
+NUM_PROGRESS_BAR = 100
 
 # ---------------------- TESTING
 DATA_PATH = "data"

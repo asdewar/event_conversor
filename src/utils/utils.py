@@ -1,54 +1,14 @@
+import src.utils.constants as cte
+import math
 import os
-import src.utils.colors as c
 
 
-def checkPathAndType(path, file_types):
-    if not os.path.exists(path):
-        c.red("Path doesn't exist")
-        exit()
+def checkPathAndType(path_file, file_type):
+    if not os.path.exists(path_file):
+        raise Exception("Path {} doesn't exist".format(path_file))
 
-    file_type = path.split(".")[-1]
-    if file_type not in file_types:
-        c.red("This type of file isn't admitted (only {})".format(file_types))
-        exit()
-
-    return file_type
-
-
-def printEvent(ev):
-    print("Event: x={}\ty={}\tpol={}\tts={}".format(ev.x, ev.y, ev.pol, ev.ts))
-
-
-def choose(question, options, ret_index=False):
-    c.blue("Introduce the INDEX of the element:")
-    for i, option in enumerate(options):
-        print("[{}] {}".format(i, option))
-
-    try:
-        index = int(input(question))
-        return index if ret_index else list(options)[index]
-
-    except ValueError:
-        c.red('The input must be an integer')
-        exit()
-    except IndexError:
-        c.red('Option out of bounds')
-        exit()
-
-
-def multiInputs(question, options):
-    c.blue("Write the NAME for each option:")
-    ret_list = []
-
-    print(question)
-    for option in options:
-        ret_list.append(input("{}: ".format(option)))
-
-    return ret_list
-
-
-def raiseException(error_text="Error"):
-    raise Exception(error_text)
+    if file_type not in cte.ADMITTED_TYPES:
+        raise Exception("This type of file: ({}) isn't admitted (only {})".format(file_type, cte.ADMITTED_TYPES))
 
 
 def combine(whole, decimal):
@@ -66,4 +26,31 @@ def secsToNsecs(num):
 
 
 def getExtension(file_name):
-    return file_name.split(".")[-1]
+    if "." in file_name:
+        return file_name.split(".")[-1]
+    else:
+        return ""
+
+
+def addExtension(path_file, type_file):
+    if getExtension(path_file) == "":
+        if path_file[-1] == ".":
+            return path_file + type_file
+        else:
+            return path_file + "." + type_file
+    else:
+        return path_file
+
+
+def getNumProgress(num_events):
+    return math.ceil(num_events / cte.NUM_PROGRESS_BAR)
+
+
+class SingletonMeta(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            instance = super().__call__(*args, **kwargs)
+            cls._instances[cls] = instance
+        return cls._instances[cls]
