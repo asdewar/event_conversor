@@ -1,19 +1,17 @@
+from src.config.config import Config
 from src.testing.testUtils import generateRandomFiles, testFileAndType, testTypes, testShuffle
-from src.gui.UI import UI
+from src.ui.UI import UI
 
 
 def main():
 
-    UI("graphic")
+    UI("terminal")
 
-    generateRandomFiles(10000)
+    Config("src/config/config.json")
 
-    # testFileAndType("data/matlab/matrix_nx4.mat", "mat")
-    # testFileAndType("data/matlab/b_0376.mat", "txt")
+    # testFileAndType("data/aedat/aedat4/Cars_sequence.aedat4", "aedat")
 
-    # testTypes("aedat", "aedat")
-
-    # testShuffle(-1)
+    testTypes("aedat", "aedat")
 
 
 # Main

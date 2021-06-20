@@ -1,7 +1,7 @@
-from src.gui.interfaceUI import InterfaceUI
-from src.gui.graphicUI import GraphicUI
-from src.gui.terminalUI import TerminalUI
-from src.gui.transparentUI import TransparentUI
+from src.ui.interfaceUI import InterfaceUI
+from src.ui.graphicUI import GraphicUI
+from src.ui.terminalUI import TerminalUI
+from src.ui.transparentUI import TransparentUI
 from src.utils.utils import SingletonMeta
 
 

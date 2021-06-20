@@ -1,7 +1,7 @@
 from src.utils.utils import secsToNsecs, nsecsToSecs, getNumProgress
 from src.format.EventClass import Event
-import src.utils.constants as cte
-from src.gui.UI import UI
+import src.config.constants as cte
+from src.ui.UI import UI
 import struct
 import os
 

@@ -1,20 +1,16 @@
 from src.converters.mainConverter import getEventsFromFile, putEventsInFile
 from src.format.EventClass import Event
-import src.utils.constants as cte
+import src.config.constants as cte
 import src.utils.colors as c
 import random
 import os
 
-from src.gui.UI import UI
+from src.ui.UI import UI
 
 INTERVAL_X = (0, 127)
 INTERVAL_Y = (0, 127)
 INTERVAL_TS = (0.000000000, 0.000001000)
 ERROR_TS = 0.000000002
-
-
-def printEvent(ev):
-    print("Event: x={}\ty={}\tpol={}\tts={}".format(ev.x, ev.y, ev.pol, ev.ts))
 
 
 def equalEvent(event1, event2):
@@ -35,8 +31,8 @@ def equalEventList(event_list1, event_list2):
     for ev1, ev2 in zip(event_list1, event_list2):
         if not equalEvent(ev1, ev2):
             print("Failed in events:")
-            printEvent(ev1)
-            printEvent(ev2)
+            print(ev1)
+            print(ev2)
             return False
 
     print("Both event lists are equal!!!")

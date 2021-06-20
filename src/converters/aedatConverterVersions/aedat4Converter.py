@@ -1,6 +1,6 @@
 from src.format.EventClass import Event
 from src.utils.utils import nsecsToSecs
-from src.gui.UI import UI
+from src.ui.UI import UI
 import aedat
 
 
@@ -25,10 +25,4 @@ def aedat4ToAbstract(input_file):
 
 
 def abstractToAedat4(event_list, output_file):
-    UI().objectUI.showMessage("Starting to write aedat4 file", "w")
-
-
-    pass
-
-
-    UI().objectUI.showMessage("Finishing writing the aedat4 file", "c")
+    UI().objectUI.showMessage("Not implemented yet.", "w")

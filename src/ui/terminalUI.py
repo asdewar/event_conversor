@@ -1,5 +1,5 @@
-from src.gui.interfaceUI import InterfaceUI
-import src.utils.constants as cte
+from src.ui.interfaceUI import InterfaceUI
+import src.config.constants as cte
 import src.utils.colors as c
 import traceback
 
@@ -8,6 +8,9 @@ class TerminalUI(InterfaceUI):
     progress = 0
 
     def initialWindow(self, convert, input_file, output_file, input_type, output_type, use_config, config_path):
+
+        cte.NUM_PROGRESS_BAR = 10
+
         c.blue("---STARTING CONVERSION---")
         convert(input_file, output_file, input_type, output_type)
         c.blue("---CONVERSION FINISHED---")

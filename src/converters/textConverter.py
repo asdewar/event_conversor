@@ -1,6 +1,6 @@
 from src.utils.utils import getNumProgress
 from src.format.EventClass import Event
-from src.gui.UI import UI
+from src.ui.UI import UI
 
 
 def textToAbstract(input_file):

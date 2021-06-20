@@ -1,5 +1,5 @@
-data
-output
-venv
-.idea
 .gitignore
+.idea
+output
+data
+venv

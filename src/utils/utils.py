@@ -1,4 +1,4 @@
-import src.utils.constants as cte
+import src.config.constants as cte
 import math
 import os
 

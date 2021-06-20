@@ -1,4 +1,4 @@
-from src.gui.interfaceUI import InterfaceUI
+from src.ui.interfaceUI import InterfaceUI
 
 
 class TransparentUI(InterfaceUI):

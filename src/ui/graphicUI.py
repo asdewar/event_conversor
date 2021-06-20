@@ -1,7 +1,7 @@
 from src.utils.utils import getExtension
-from src.gui.interfaceUI import InterfaceUI
+from src.ui.interfaceUI import InterfaceUI
 from src.config.config import Config
-import src.utils.constants as cte
+import src.config.constants as cte
 import PySimpleGUI as sg
 import traceback
 import os
@@ -13,6 +13,7 @@ white_green = "#C3F7EA"
 dark_green = "#397567"
 fluorescent_green = "#77F5D8"
 normal_green = "#5FC2AB"
+light_red = "#ffb5b7"
 
 
 class GraphicUI(InterfaceUI):
@@ -130,8 +131,6 @@ class GraphicUI(InterfaceUI):
 
                 if not os.path.isfile(i_f):
                     sg.popup_error("The input file does not exists")
-                elif not os.path.isfile(o_f):
-                    sg.popup_error("The output file does not exists")
                 elif u_c and not os.path.isfile(c_p):
                     sg.popup_error("The config file does not exists")
                 elif i_t not in cte.ADMITTED_TYPES:
@@ -197,6 +196,5 @@ class GraphicUI(InterfaceUI):
 
     def errorWindow(self, e):
         tb = traceback.format_exc()
-        if sg.popup_yes_no('An error occurred:\n' + str(e) + '\nShow traceback?', text_color="red",
-                           background_color="white") == "Yes":
+        if sg.popup_yes_no('An error occurred:\n' + str(e) + '\nShow traceback?', text_color=light_red) == "Yes":
             sg.popup_error('EXCEPTION:', e, tb)

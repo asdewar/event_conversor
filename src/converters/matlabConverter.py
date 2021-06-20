@@ -2,8 +2,8 @@ from src.utils.utils import secsToNsecs, nsecsToSecs, getNumProgress
 from src.format.EventClass import Event
 from numpy import double, column_stack
 from src.config.config import Config
-import src.utils.constants as cte
-from src.gui.UI import UI
+import src.config.constants as cte
+from src.ui.UI import UI
 import scipy.io as sio
 
 

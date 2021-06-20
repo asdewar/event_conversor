@@ -2,8 +2,8 @@ from src.converters.aedatConverterVersions.aedat2Converter import abstractToAeda
 from src.converters.aedatConverterVersions.aedat3Converter import abstractToAedat3, aedat3ToAbstract
 from src.converters.aedatConverterVersions.aedat4Converter import abstractToAedat4, aedat4ToAbstract
 from src.config.config import Config
-import src.utils.constants as cte
-from src.gui.UI import UI
+import src.config.constants as cte
+from src.ui.UI import UI
 
 
 def aedatToAbstract(input_file):

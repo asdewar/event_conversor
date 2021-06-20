@@ -1,8 +1,8 @@
 from src.utils.utils import combine, getNumProgress
-from src.format.EventRosbag import Event as _Event
+from src.format.bag.EventRosbag import Event as _Event
 from src.format.EventClass import Event
 from src.config.config import Config
-from src.gui.UI import UI
+from src.ui.UI import UI
 import rosbag
 import rospy
 

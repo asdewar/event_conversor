@@ -1,14 +1,14 @@
 from src.utils.utils import getExtension
-import src.utils.constants as cte
+import src.config.constants as cte
 import argparse
 
 
 def initialArgs(add_help):
     parser = argparse.ArgumentParser(description='Convert files which contains DVS events', add_help=add_help)
 
-    parser.add_argument('--use_graphic_UI', '-gr', action='store_true',
+    parser.add_argument('--use_graphic_UI', '-g', action='store_true',
                         help='Use the graphic user interface (Do not use UI options to run without UI)')
-    parser.add_argument('--use_terminal_UI', '-te', action='store_true',
+    parser.add_argument('--use_terminal_UI', '-t', action='store_true',
                         help='Use the terminal user interface (Do not use UI options to run without UI)')
 
     return parser
@@ -41,7 +41,7 @@ def parseArguments():
     parser.add_argument('--input_type', default='',
                         help='The input type (not introduce to autodetect from input_file)')
 
-    parser.add_argument('--output_type', default='',
+    parser.add_argument('--output_type', default='', required=(opt == 1),
                         help='The output type (not introduce to autodetect from output_file)')
 
     parser.add_argument('--config_path', default=cte.CONFIG_PATH,

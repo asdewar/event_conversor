@@ -10,7 +10,7 @@ NUM_PROGRESS_BAR = 100
 # ---------------------- TESTING
 DATA_PATH = "data"
 
-OUTPUT_DEFAULT = "output/test_output."
+OUTPUT_DEFAULT = "output."
 
 # ---------------------- MATLAB
 MATLAB_STRUCT_NAMES = ['coordinate x', 'coordinate y', 'polarization', 'timestamp']

@@ -1,9 +1,7 @@
 from src.argumentsParser.argumentsParser import parseArguments
 from src.converters.mainConverter import convert
 from src.config.config import Config
-from src.gui.UI import UI
-
-FILE_TYPES = ['txt', 'bag']
+from src.ui.UI import UI
 
 
 def main():
