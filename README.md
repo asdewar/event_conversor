@@ -18,12 +18,17 @@ En esta aplicación se han utilizado las siguientes librerías de Python:
 - [PySimpleGUI](https://pysimplegui.readthedocs.io/en/latest/)
 - [rosbag](http://wiki.ros.org/rosbag/Cookbook)
 - [rospy](http://wiki.ros.org/rospy)
+- [rospkg](http://wiki.ros.org/rospkg)
+- [gnupg](https://gnupg.org/)
+- [pycryptodomex](https://pypi.org/project/pycryptodomex/)
+- [PyYAML](https://pypi.org/project/PyYAML/)
+- [scipy](https://www.scipy.org/)
 
 ## Instalación
 Se deben instalar todas las dependencias antes de ejecutar el programa. Para instalar estos paquetes, se debe ejecutar el siguiente comando:
 
 ```
-pip3 install aedat genpy numpy pysimplegui rosbag rospy
+pip3 install aedat genpy numpy pysimplegui rosbag rospy rospkg gnupg pycryptodomex PyYAML scipy
 ```
 
 ## Ejecución y parámetros
@@ -69,6 +74,9 @@ En esta aplicación se aceptan cinco formatos diferentes:
     - Versión **2.0**, escritura y lectura implementadas.
     - Versión **3.1**, escritura y lectura implementadas.
     - Versión **4.0**, solo lectura implementada.
+
+## Archivos de ejemplo
+Junto al programa desarrollado, se ha añadido una carpeta de nombre _data-examples_ con archivos de ejemplos para cada tipo de archivo. Cada archivo contiene 200 eventos almacenados, para que el usuario pueda empezar a probar el programa con estos ficheros.
 
 ## Autoría
 Este programa se ha desarrollado como Trabajo de Fin de Grado de la Escuela Politécnica Superior ([EPS](https://www.uam.es/ss/Satellite/EscuelaPolitecnica/es/home.htm)) de la  Universidad Autónoma de Madrid ([UAM](https://www.uam.es/uam/inicio)) en el grado de Ingeniería Informática.

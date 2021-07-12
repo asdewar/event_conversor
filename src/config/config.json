@@ -25,6 +25,6 @@
   },
   "aedat": {
     "_comment": "Default version to write aedat files, admitted: 'aedat 2.0', 'aedat 3.1' and 'aedat 4.0'",
-    "version": "aedat 4.0"
+    "version": "aedat 3.1"
   }
 }
